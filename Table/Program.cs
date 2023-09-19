@@ -21,6 +21,9 @@ namespace Table
         //Selection for cell
         static int[,] SELECTION_CELLS = new int[ROW, LENGTH];
         static bool isSelected = false;
+        static int prevCellRow = 0;
+        static int prevCellCol = 0;
+        //static int[,,,]PREVIOUS_GRID = new int[ROW, LENGTH, ROW, LENGTH];
 
         static void Main(string[] args)
         {
@@ -121,74 +124,168 @@ namespace Table
 
             RepositionCursor();
         }
-        private static void ChooseCell()
-        {
-            //Use number to keep track of selected index
-            int cellRow = 0;
-            int cellCol = 0;
-            ConsoleKeyInfo keyPressed = Console.ReadKey();
-            RepositionCursor();
-            ColouringCell(cellRow, cellCol);
+        //private static void ChooseCell()
+        //{
+        //    //Use number to keep track of selected index
+        //    int cellRow = 0;
+        //    int cellCol = 0;
+        //    int prevCellRow = cellRow;
+        //    int prevCellCol = cellCol;
 
-            
-            while (!isSelected)
-            {
-                switch (keyPressed.Key)
-                {
-                    case ConsoleKey.S:
-                        if (cellRow < 2)
-                        {
-                            cellRow++;
-                            RepositionCursor();
-                            Console.Write("Pressed S");
-                        }
-                        break;
-                    case ConsoleKey.W:
-                        if (cellRow > 0)
-                        {
-                            cellRow--;
-                            RepositionCursor();
-                            Console.Write("Pressed W");
-                        }
-                        break;
-                    case ConsoleKey.A:
-                        if (cellCol > 0)
-                        {
-                            cellCol--;
-                            RepositionCursor();
-                            Console.Write("Pressed A");
-                        }
-                        break;
-                    case ConsoleKey.D:
-                        if (cellCol < 2)
-                        {
-                            cellCol++;
-                            RepositionCursor();
-                            Console.Write("Pressed D");
-                        }
-                        break;
-                    case ConsoleKey.Enter:
-                        isSelected = true;
-                        break;
-                    default:
-                        RepositionCursor();
-                        break;
-                }
-                Console.WriteLine(cellRow + "," + cellCol);
-                ColouringCell(cellRow, cellCol);
-                Console.ReadKey(true);
-            }
 
-        }
+        //    RepositionCursor();
+        //    ColourActiveCell(cellRow, cellCol);
 
-        private static void RepositionCursor()
-        {
-            Console.SetCursorPosition(0, 13);
-        }
+        //    while (!isSelected)
+        //    {
+        //        prevCellRow = cellRow;
+        //        prevCellCol = cellCol;
+        //        ConsoleKeyInfo keyPressed = Console.ReadKey();
+        //        switch (keyPressed.Key)
+        //        {
+        //            case ConsoleKey.S:
+        //                if (cellRow < 2)
+        //                {
+        //                    //prevCellRow = cellRow;
+        //                    cellRow++;
+        //                    RepositionCursor();
+        //                }
+        //                break;
+        //            case ConsoleKey.W:
+        //                if (cellRow > 0)
+        //                {
+        //                    //prevCellRow = cellRow;
+        //                    cellRow--;
+        //                    RepositionCursor();
+        //                }
+        //                break;
+        //            case ConsoleKey.A:
+        //                if (cellCol > 0)
+        //                {
+        //                    //prevCellCol = cellCol;
+        //                    cellCol--;
+        //                    RepositionCursor();
+        //                }
+        //                break;
+        //            case ConsoleKey.D:
+        //                if (cellCol < 2)
+        //                {
+        //                    //prevCellCol = cellCol;
+        //                    cellCol++;
+        //                    RepositionCursor();
+        //                }
+        //                break;
+        //            case ConsoleKey.Enter:
+        //                isSelected = true;
+        //                RepositionCursor();
+        //                Console.WriteLine("ENTER HAS BEEN PRESSED");
+        //                break;
+        //            default:
+        //                RepositionCursor();
+        //                break;
+        //        }
+        //        Console.WriteLine(cellRow + "," + cellCol);
+        //        ColourActiveCell(cellRow, cellCol);
+        //        ColourPrevCell(prevCellRow, prevCellCol);
+        //        Console.ReadKey(true);
+        //    }
+        //    //Figure out why colour isn't changing for selected cell
+        //    //ColourActiveCell(cellRow, cellCol);
+
+
+        //}
 
         //Call in ChooseCell
-        private static void ColouringCell(int cellRow, int cellCol)
+        private static void ColouringCell(ConsoleColor background, int cellRow, int cellCol, int precellRow, int precellCol)
         {
+            //up
+            if (precellRow > cellRow)
+            {
+                for (int row1 = precellRow; row1 < precellRow + 1; row1++)
+                {
+                    for (int col1 = precellCol; col1 < precellCol + 1; col1++)
+                    {
+                        //each child cell
+                        for (int row2 = 0; row2 < 3; row2++)
+                        {
+                            for (int col2 = 0; col2 < 3; col2++)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+                                Console.Write(GRID[row1, col1, row2, col2]);
+
+                            }
+                        }
+                    }
+                }
+            }
+            //down
+            else if (precellRow < cellRow)
+            {
+                for (int row1 = precellRow; row1 < precellRow + 1; row1++)
+                {
+                    for (int col1 = precellCol; col1 < precellCol + 1; col1++)
+                    {
+                        //each child cell
+                        for (int row2 = 0; row2 < 3; row2++)
+                        {
+                            for (int col2 = 0; col2 < 3; col2++)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+                                Console.Write(GRID[row1, col1, row2, col2]);
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            //right
+            if (precellCol < cellCol)
+            {
+                for (int row1 = precellRow; row1 < precellRow + 1; row1++)
+                {
+                    for (int col1 = precellCol; col1 < precellCol + 1; col1++)
+                    {
+                        //each child cell
+                        for (int row2 = 0; row2 < 3; row2++)
+                        {
+                            for (int col2 = 0; col2 < 3; col2++)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+                                Console.Write(GRID[row1, col1, row2, col2]);
+
+                            }
+                        }
+                    }
+                }
+            }
+            //left
+            else if (precellCol > cellCol)
+            {
+                for (int row1 = precellRow; row1 < precellRow + 1; row1++)
+                {
+                    for (int col1 = precellCol; col1 < precellCol + 1; col1++)
+                    {
+                        //each child cell
+                        for (int row2 = 0; row2 < 3; row2++)
+                        {
+                            for (int col2 = 0; col2 < 3; col2++)
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+                                Console.Write(GRID[row1, col1, row2, col2]);
+
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
             for (int row1 = cellRow; row1 < cellRow + 1; row1++)
             {
                 for (int col1 = cellCol; col1 < cellCol + 1; col1++)
@@ -207,6 +304,143 @@ namespace Table
                 }
             }
         }
+        private static void ChooseCell()
+        {
+            int cellRow = 0;
+            int cellCol = 0;
+            int precellRow = 0;
+            int precellCol = 0;
+            ConsoleKey key;
+
+            do
+            {
+                key = Console.ReadKey(true).Key;
+
+
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow:
+                        if (cellRow > 0)
+                        {
+                            precellRow = cellRow;
+                            cellRow--;
+                            precellCol = cellCol;
+                            ColouringCell(Console.BackgroundColor, cellRow, cellCol, precellRow, precellCol);
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (cellRow < 2)
+                        {
+                            precellRow = cellRow;
+                            cellRow++;
+                            precellCol = cellCol;
+                            ColouringCell(Console.BackgroundColor, cellRow, cellCol, precellRow, precellCol);
+                        }
+                        break;
+
+
+                    case ConsoleKey.RightArrow:
+                        if (cellCol < 2)
+                        {
+                            precellCol = cellCol;
+                            cellCol++;
+                            precellRow = cellRow;
+
+                            ColouringCell(Console.BackgroundColor, cellRow, cellCol, precellRow, precellCol);
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (cellCol > 0)
+                        {
+                            precellCol = cellCol;
+                            cellCol--;
+                            precellRow = cellRow;
+                            ColouringCell(Console.BackgroundColor, cellRow, cellCol, precellRow, precellCol);
+                        }
+                        break;
+
+
+                }
+            }
+            while (key != ConsoleKey.X);
+
+        }
+
+        private static void RepositionCursor()
+        {
+            Console.SetCursorPosition(0, 13);
+        }
+
+        //Call in ChooseCell
+        //private static void ColourActiveCell(int cellRow, int cellCol)
+        //{
+        //    if (!isSelected)
+        //    {
+        //        for (int row1 = cellRow; row1 < cellRow + 1; row1++)
+        //        {
+        //            for (int col1 = cellCol; col1 < cellCol + 1; col1++)
+        //            {
+        //                //each child cell
+        //                for (int row2 = 0; row2 < 3; row2++)
+        //                {
+        //                    for (int col2 = 0; col2 < 3; col2++)
+        //                    {
+        //                        Console.ForegroundColor = ConsoleColor.Red;
+        //                        Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+        //                        Console.Write(GRID[row1, col1, row2, col2]);
+        //                        RepositionCursor();
+
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else if (isSelected)
+        //    {
+        //        for (int row1 = cellRow; row1 < cellRow + 1; row1++)
+        //        {
+        //            for (int col1 = cellCol; col1 < cellCol + 1; col1++)
+        //            {
+        //                //each child cell
+        //                for (int row2 = 0; row2 < 3; row2++)
+        //                {
+        //                    for (int col2 = 0; col2 < 3; col2++)
+        //                    {
+        //                        Console.ForegroundColor = ConsoleColor.Yellow;
+        //                        Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+        //                        Console.Write(GRID[row1, col1, row2, col2]);
+        //                        RepositionCursor();
+
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private static void ColourPrevCell(int prevCellRow, int prevCellCol)
+        //{
+        //    for (int row1 = prevCellRow; row1 < prevCellRow + 1; row1++)
+        //    {
+        //        for (int col1 = prevCellCol; col1 < prevCellCol + 1; col1++)
+        //        {
+        //            //each child cell
+        //            for (int row2 = 0; row2 < 3; row2++)
+        //            {
+        //                for (int col2 = 0; col2 < 3; col2++)
+        //                {
+        //                    Console.ResetColor();
+        //                    Console.SetCursorPosition(initgridLocX + (4 * col1) + col2, initgridLocY + (4 * row1) + row2);
+        //                    Console.Write(GRID[row1, col1, row2, col2]);
+        //                    RepositionCursor();
+
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+
 
     }
 }
